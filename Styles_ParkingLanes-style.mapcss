@@ -607,50 +607,74 @@ way[highway][parking:both:access:conditional=~/customers/][setting("highlight_co
     color: darkorange;
 }
 
-/* Private parking (e.g. residents only). */
+/* No public access. */
 
-way[highway][parking:right:access=private][setting("highlight_conditions")]::parking_lanes_right,
-way[highway][parking:both:access=private][setting("highlight_conditions")]::parking_lanes_right
+way[highway][parking:right:access=no][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:both:access=no][setting("highlight_conditions")]::parking_lanes_right
 {
-    color: orangered;
+    color: red;
 }
-way[highway][parking:left:access=private][setting("highlight_conditions")]::parking_lanes_left,
-way[highway][parking:both:access=private][setting("highlight_conditions")]::parking_lanes_left
+way[highway][parking:left:access=no][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:both:access=no][setting("highlight_conditions")]::parking_lanes_left
 {
-    color: orangered;
+    color: red;
 }
 
-way[highway][parking:right:access:conditional=~/private/][setting("highlight_conditions")]::parking_lanes_right,
-way[highway][parking:both:access:conditional=~/private/][setting("highlight_conditions")]::parking_lanes_right
+way[highway][parking:right:access:conditional=~/no/][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:both:access:conditional=~/no/][setting("highlight_conditions")]::parking_lanes_right
 {
-    color: orangered;
+    color: red;
 }
-way[highway][parking:left:access:conditional=~/private/][setting("highlight_conditions")]::parking_lanes_left,
-way[highway][parking:both:access:conditional=~/private/][setting("highlight_conditions")]::parking_lanes_left
+way[highway][parking:left:access:conditional=~/no/][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:both:access:conditional=~/no/][setting("highlight_conditions")]::parking_lanes_left
 {
-    color: orangered;
+    color: red;
+}
+
+/* Customers parking. */
+
+way[highway][parking:right:access=customers][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:both:access=customers][setting("highlight_conditions")]::parking_lanes_right
+{
+    color: darkorange;
+}
+way[highway][parking:left:access=customers][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:both:access=customers][setting("highlight_conditions")]::parking_lanes_left
+{
+    color: darkorange;
+}
+
+way[highway][parking:right:access:conditional=~/customers/][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:both:access:conditional=~/customers/][setting("highlight_conditions")]::parking_lanes_right
+{
+    color: darkorange;
+}
+way[highway][parking:left:access:conditional=~/customers/][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:both:access:conditional=~/customers/][setting("highlight_conditions")]::parking_lanes_left
+{
+    color: darkorange;
 }
 
 /* Disabled parking. */
 
-way[highway][parking:right:disabled=designated][setting("highlight_conditions")]::parking_lanes_right,
-way[highway][parking:both:disabled=designated][setting("highlight_conditions")]::parking_lanes_right
+way[highway][parking:right:disabled][parking:right:disabled!=no][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:both:disabled][parking:right:disabled!=no][setting("highlight_conditions")]::parking_lanes_right
 {
     color: turquoise;
 }
-way[highway][parking:left:disabled=designated][setting("highlight_conditions")]::parking_lanes_left,
-way[highway][parking:both:disabled=designated][setting("highlight_conditions")]::parking_lanes_left
+way[highway][parking:left:disabled][parking:right:disabled!=no][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:both:disabled][parking:right:disabled!=no][setting("highlight_conditions")]::parking_lanes_left
 {
     color: turquoise;
 }
 
-way[highway][parking:right:disabled:conditional=~/designated/][setting("highlight_conditions")]::parking_lanes_right,
-way[highway][parking:both:disabled:conditional=~/designated/][setting("highlight_conditions")]::parking_lanes_right
+way[highway][parking:right:disabled:conditional][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:both:disabled:conditional][setting("highlight_conditions")]::parking_lanes_right
 {
     color: turquoise;
 }
-way[highway][parking:left:disabled:conditional=~/designated/][setting("highlight_conditions")]::parking_lanes_left,
-way[highway][parking:both:disabled:conditional=~/designated/][setting("highlight_conditions")]::parking_lanes_left
+way[highway][parking:left:disabled:conditional][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:both:disabled:conditional][setting("highlight_conditions")]::parking_lanes_left
 {
     color: turquoise;
 }
