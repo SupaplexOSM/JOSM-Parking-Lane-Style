@@ -2,10 +2,10 @@
 meta {
     title: "Parking lanes";
     description: "Parking lanes along roads and parking/stopping restrictions.";
-    link: "https://wiki.openstreetmap.org/wiki/Key:parking:lane";
+    link: "https://wiki.openstreetmap.org/wiki/Street_parking";
     icon: "blue-sign-with-car.svg";
     author: "Sebastian Klemm, Kay Drangmeister, Jeroen Hoek, riiga, Supaplex030";
-    version: "0.2_2022-11-22";
+    version: "0.2_2022-11-26";
     min-josm-version: "4399";
 }
 
@@ -26,7 +26,6 @@ meta[lang=ru]
 {
     title: "Парковка вдоль дороги";
     description: "Парковка вдоль дорог/ограничения и запреты у такой парковки";
-    link: "https://wiki.openstreetmap.org/wiki/RU:Key:parking:lane";
 }
 
 /*-----------*/
@@ -35,13 +34,13 @@ meta[lang=ru]
 
 setting::show_warnings {
   type: boolean;
-  label: tr("Show warning symbols for deprecated or incompatible tag values");
+  label: tr("Show warning symbols for deprecated and incompatible tag values");
   default: true;
 }
 
 setting::highlight_conditions {
   type: boolean;
-  label: tr("Use different colours to highlight values of parking:condition:*");
+  label: tr("Use different colours to highlight parking restrictions");
   default: true;
 }
 
@@ -165,7 +164,48 @@ way[highway][parking:both=~/^(yes|lane|street_side|on_kerb|half_on_kerb|shoulder
     dashes: 10, 4;
 }
 
-/* Styling for specific orientations. */
+/* unspecified orientation with conditional parking restrictions (add extra layer for no stopping markers on top of parallel parkers) */
+
+way[highway][parking:right=~/^(yes|lane|street_side|on_kerb|half_on_kerb|shoulder)$/][parking:right:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right,
+way[highway][parking:right=~/^(yes|lane|street_side|on_kerb|half_on_kerb|shoulder)$/][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right,
+way[highway][parking:both=~/^(yes|lane|street_side|on_kerb|half_on_kerb|shoulder)$/][parking:right:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right,
+way[highway][parking:both=~/^(yes|lane|street_side|on_kerb|half_on_kerb|shoulder)$/][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right
+{
+    dashes: 10, 18;
+}
+way[highway][parking:right=~/^(yes|lane|street_side|on_kerb|half_on_kerb|shoulder)$/][parking:right:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right_conditional,
+way[highway][parking:right=~/^(yes|lane|street_side|on_kerb|half_on_kerb|shoulder)$/][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right_conditional,
+way[highway][parking:both=~/^(yes|lane|street_side|on_kerb|half_on_kerb|shoulder)$/][parking:right:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right_conditional,
+way[highway][parking:both=~/^(yes|lane|street_side|on_kerb|half_on_kerb|shoulder)$/][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right_conditional
+{
+    width: 6;
+    dashes: 6, 22;
+    dashes-offset: 12;
+    offset: -8;
+}
+way[highway][parking:left=~/^(yes|lane|street_side|on_kerb|half_on_kerb|shoulder)$/][parking:left:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left,
+way[highway][parking:left=~/^(yes|lane|street_side|on_kerb|half_on_kerb|shoulder)$/][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left,
+way[highway][parking:both=~/^(yes|lane|street_side|on_kerb|half_on_kerb|shoulder)$/][parking:left:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left,
+way[highway][parking:both=~/^(yes|lane|street_side|on_kerb|half_on_kerb|shoulder)$/][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left
+{
+    dashes: 10, 18;
+}
+way[highway][parking:left=~/^(yes|lane|street_side|on_kerb|half_on_kerb|shoulder)$/][parking:left:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left_conditional,
+way[highway][parking:left=~/^(yes|lane|street_side|on_kerb|half_on_kerb|shoulder)$/][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left_conditional,
+way[highway][parking:both=~/^(yes|lane|street_side|on_kerb|half_on_kerb|shoulder)$/][parking:left:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left_conditional,
+way[highway][parking:both=~/^(yes|lane|street_side|on_kerb|half_on_kerb|shoulder)$/][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left_conditional
+{
+    width: 6;
+    dashes: 6, 22;
+    dashes-offset: 12;
+    offset: 8;
+}
+
+/*-----------------------------------------------------------------*/
+/* Styling for specific orientations and conditional restrictions. */
+/*-----------------------------------------------------------------*/
+
+/* parallel every time. */
 
 way[highway][parking:right:orientation=parallel]::parking_lanes_right,
 way[highway][parking:both:orientation=parallel]::parking_lanes_right
@@ -180,6 +220,45 @@ way[highway][parking:both:orientation=parallel]::parking_lanes_left
     dashes: 10, 3;
 }
 
+/* parallel with conditional parking restrictions (add extra layer for no stopping markers on top of parallel parkers) */
+
+way[highway][parking:right:orientation=parallel][parking:right:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right,
+way[highway][parking:right:orientation=parallel][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right,
+way[highway][parking:both:orientation=parallel][parking:right:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right,
+way[highway][parking:both:orientation=parallel][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right
+{
+    dashes: 10, 16;
+}
+way[highway][parking:right:orientation=parallel][parking:right:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right_conditional,
+way[highway][parking:right:orientation=parallel][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right_conditional,
+way[highway][parking:both:orientation=parallel][parking:right:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right_conditional,
+way[highway][parking:both:orientation=parallel][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right_conditional
+{
+    width: 6;
+    dashes: 6, 20;
+    dashes-offset: 11;
+    offset: -8;
+}
+way[highway][parking:left:orientation=parallel][parking:left:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left,
+way[highway][parking:left:orientation=parallel][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left,
+way[highway][parking:both:orientation=parallel][parking:left:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left,
+way[highway][parking:both:orientation=parallel][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left
+{
+    dashes: 10, 16;
+}
+way[highway][parking:left:orientation=parallel][parking:left:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left_conditional,
+way[highway][parking:left:orientation=parallel][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left_conditional,
+way[highway][parking:both:orientation=parallel][parking:left:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left_conditional,
+way[highway][parking:both:orientation=parallel][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left_conditional
+{
+    width: 6;
+    dashes: 6, 20;
+    dashes-offset: 11;
+    offset: 8;
+}
+
+/* diagonal every time. */
+
 way[highway][parking:right:orientation=diagonal]::parking_lanes_right,
 way[highway][parking:both:orientation=diagonal]::parking_lanes_right
 {
@@ -193,6 +272,45 @@ way[highway][parking:both:orientation=diagonal]::parking_lanes_left
     dashes: 4, 6;
 }
 
+/* diagonal with conditional parking restrictions (add extra layer for no stopping markers on top of parallel parkers) */
+
+way[highway][parking:right:orientation=diagonal][parking:right:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right,
+way[highway][parking:right:orientation=diagonal][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right,
+way[highway][parking:both:orientation=diagonal][parking:right:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right,
+way[highway][parking:both:orientation=diagonal][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right
+{
+    dashes: 4, 16;
+}
+way[highway][parking:right:orientation=diagonal][parking:right:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right_conditional,
+way[highway][parking:right:orientation=diagonal][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right_conditional,
+way[highway][parking:both:orientation=diagonal][parking:right:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right_conditional,
+way[highway][parking:both:orientation=diagonal][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right_conditional
+{
+    width: 6;
+    dashes: 6, 14;
+    dashes-offset: 11;
+    offset: -8;
+}
+way[highway][parking:left:orientation=diagonal][parking:left:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left,
+way[highway][parking:left:orientation=diagonal][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left,
+way[highway][parking:both:orientation=diagonal][parking:left:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left,
+way[highway][parking:both:orientation=diagonal][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left
+{
+    dashes: 4, 16;
+}
+way[highway][parking:left:orientation=diagonal][parking:left:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left_conditional,
+way[highway][parking:left:orientation=diagonal][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left_conditional,
+way[highway][parking:both:orientation=diagonal][parking:left:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left_conditional,
+way[highway][parking:both:orientation=diagonal][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left_conditional
+{
+    width: 6;
+    dashes: 6, 14;
+    dashes-offset: 11;
+    offset: 8;
+}
+
+/* perpendicular every time. */
+
 way[highway][parking:right:orientation=perpendicular]::parking_lanes_right,
 way[highway][parking:both:orientation=perpendicular]::parking_lanes_right
 {
@@ -204,6 +322,43 @@ way[highway][parking:both:orientation=perpendicular]::parking_lanes_left
 {
     width: 10;
     dashes: 3, 4;
+}
+
+/* perpendicular with conditional parking restrictions (add extra layer for no stopping markers on top of parallel parkers) */
+
+way[highway][parking:right:orientation=perpendicular][parking:right:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right,
+way[highway][parking:right:orientation=perpendicular][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right,
+way[highway][parking:both:orientation=perpendicular][parking:right:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right,
+way[highway][parking:both:orientation=perpendicular][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right
+{
+    dashes: 3, 11;
+}
+way[highway][parking:right:orientation=perpendicular][parking:right:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right_conditional,
+way[highway][parking:right:orientation=perpendicular][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right_conditional,
+way[highway][parking:both:orientation=perpendicular][parking:right:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right_conditional,
+way[highway][parking:both:orientation=perpendicular][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_right_conditional
+{
+    width: 6;
+    dashes: 6, 8;
+    dashes-offset: 8.5;
+    offset: -8;
+}
+way[highway][parking:left:orientation=perpendicular][parking:left:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left,
+way[highway][parking:left:orientation=perpendicular][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left,
+way[highway][parking:both:orientation=perpendicular][parking:left:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left,
+way[highway][parking:both:orientation=perpendicular][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left
+{
+    dashes: 3, 11;
+}
+way[highway][parking:left:orientation=perpendicular][parking:left:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left_conditional,
+way[highway][parking:left:orientation=perpendicular][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left_conditional,
+way[highway][parking:both:orientation=perpendicular][parking:left:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left_conditional,
+way[highway][parking:both:orientation=perpendicular][parking:both:restriction:conditional=~/(no_parking|no_standing|no_stopping)/]::parking_lanes_left_conditional
+{
+    width: 6;
+    dashes: 6, 8;
+    dashes-offset: 8.5;
+    offset: 8;
 }
 
 /* Styling for no or separate parking. */
@@ -232,7 +387,24 @@ way[highway][parking:both=separate]::parking_lanes_left
     repeat-image: images/separate.svg;
 }
 
+/* Support ways without physical, but legal attributes. */
+
+way[highway][parking:right:restriction=~/^(no_parking|no_standing|no_stopping)$/][!parking:right][!parking:both]::parking_lanes_right,
+way[highway][parking:both:restriction=~/^(no_parking|no_standing|no_stopping)$/][!parking:right][!parking:both]::parking_lanes_right
+{
+    width: 6;
+    dashes: 6, 12;
+}
+way[highway][parking:left:restriction=~/^(no_parking|no_standing|no_stopping)$/][!parking:left][!parking:both]::parking_lanes_left,
+way[highway][parking:both:restriction=~/^(no_parking|no_standing|no_stopping)$/][!parking:left][!parking:both]::parking_lanes_left
+{
+    width: 6;
+    dashes: 6, 12;
+}
+
+/*--------------------------------------------------------------------------*/
 /* Styling for specific positions (add a second line symbolising the kerb). */
+/*--------------------------------------------------------------------------*/
 
 way[highway][parking:left=~/^(lane|street_side|on_kerb|half_on_kerb|shoulder)$/]::parking_lanes_left_kerb,
 way[highway][parking:both=~/^(lane|street_side|on_kerb|half_on_kerb|shoulder)$/]::parking_lanes_left_kerb
@@ -294,24 +466,7 @@ way[highway][parking:both=half_on_kerb]::parking_lanes_left_kerb
 way[highway][parking:right=half_on_kerb]::parking_lanes_right_kerb,
 way[highway][parking:both=half_on_kerb]::parking_lanes_right_kerb
 {
-    offset: -prop("width", parking_lanes_left) / 2 - 5;
-}
-
-/*------------------------------------------------------*/
-/* Support ways without physical, but legal attributes. */
-/*------------------------------------------------------*/
-
-way[highway][parking:right:restriction=~/^(no_parking|no_standing|no_stopping)$/][!parking:right][!parking:both]::parking_lanes_right,
-way[highway][parking:both:restriction=~/^(no_parking|no_standing|no_stopping)$/][!parking:right][!parking:both]::parking_lanes_right
-{
-    width: 6;
-    dashes: 6, 12;
-}
-way[highway][parking:left:restriction=~/^(no_parking|no_standing|no_stopping)$/][!parking:left][!parking:both]::parking_lanes_left,
-way[highway][parking:both:restriction=~/^(no_parking|no_standing|no_stopping)$/][!parking:left][!parking:both]::parking_lanes_left
-{
-    width: 6;
-    dashes: 6, 12;
+    offset: -prop("width", parking_lanes_right) / 2 - 5;
 }
 
 /*-----------------------*/
@@ -319,7 +474,11 @@ way[highway][parking:both:restriction=~/^(no_parking|no_standing|no_stopping)$/]
 /*-----------------------*/
 
 way[highway][parking:right]::parking_lanes_right,
-way[highway][parking:both]::parking_lanes_right
+way[highway][parking:both]::parking_lanes_right,
+way[highway][parking:right:orientation]::parking_lanes_right,
+way[highway][parking:both:orientation]::parking_lanes_right,
+way[highway][parking:right:restriction]::parking_lanes_right,
+way[highway][parking:both:restriction]::parking_lanes_right
 {
     offset: eval(-4 - (prop("width") * 0.5) - (prop("width", "default") * 0.5));
     repeat-image-offset: -8;
@@ -329,7 +488,11 @@ way[highway][parking:both]::parking_lanes_right
 }
 
 way[highway][parking:left]::parking_lanes_left,
-way[highway][parking:both]::parking_lanes_left
+way[highway][parking:both]::parking_lanes_left,
+way[highway][parking:left:orientation]::parking_lanes_left,
+way[highway][parking:both:orientation]::parking_lanes_left,
+way[highway][parking:left:restriction]::parking_lanes_left,
+way[highway][parking:both:restriction]::parking_lanes_left
 {
     offset: eval(4 + (prop("width") * 0.5) + (prop("width", "default") * 0.5));
     repeat-image-offset: 8;
@@ -342,173 +505,288 @@ way[highway][parking:both]::parking_lanes_left
 /* Style legal attributes (colour). */
 /*----------------------------------*/
 
-/* Free parking (no fee, no maxstay, no access or parking restrictions */
+/* Free parking (no fee, no maxstay, no access or parking restrictions). */
 
-
-
-/* [setting("highlight_conditions")] */
-
-
-
-way[highway][parking:right:fee=no]::parking_lanes_right,
-way[highway][parking:both:fee=no]::parking_lanes_right
+way[highway][parking:right:fee=no][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:both:fee=no][setting("highlight_conditions")]::parking_lanes_right
 {
     color: chartreuse;
 }
-way[highway][parking:left:fee=no]::parking_lanes_left,
-way[highway][parking:both:fee=no]::parking_lanes_left
+way[highway][parking:left:fee=no][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:both:fee=no][setting("highlight_conditions")]::parking_lanes_left
 {
     color: chartreuse;
 }
 
-way[highway][parking:right:maxstay][parking:right:maxstay!=no]::parking_lanes_right,
-way[highway][parking:both:maxstay][parking:both:maxstay!=no]::parking_lanes_right
-{
-    color: dodgerblue;
-}
-way[highway][parking:left:maxstay][parking:left:maxstay!=no]::parking_lanes_left,
-way[highway][parking:both:maxstay][parking:both:maxstay!=no]::parking_lanes_left
-{
-    color: dodgerblue;
-}
+/* Free parking with time limit. */
 
-way[highway][parking:right:maxstay:conditional]::parking_lanes_right,
-way[highway][parking:both:maxstay:conditional]::parking_lanes_right
+way[highway][parking:right:maxstay][parking:right:maxstay!=no][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:both:maxstay][parking:both:maxstay!=no][setting("highlight_conditions")]::parking_lanes_right
 {
     color: dodgerblue;
 }
-way[highway][parking:left:maxstay:conditional]::parking_lanes_left,
-way[highway][parking:both:maxstay:conditional]::parking_lanes_left
+way[highway][parking:left:maxstay][parking:left:maxstay!=no][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:both:maxstay][parking:both:maxstay!=no][setting("highlight_conditions")]::parking_lanes_left
 {
     color: dodgerblue;
 }
 
-way[highway][parking:right:fee=yes]::parking_lanes_right,
-way[highway][parking:both:fee=yes]::parking_lanes_right
+way[highway][parking:right:maxstay:conditional][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:both:maxstay:conditional][setting("highlight_conditions")]::parking_lanes_right
+{
+    color: dodgerblue;
+}
+way[highway][parking:left:maxstay:conditional][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:both:maxstay:conditional][setting("highlight_conditions")]::parking_lanes_left
+{
+    color: dodgerblue;
+}
+
+/* Paid parking. */
+
+way[highway][parking:right:fee=yes][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:both:fee=yes][setting("highlight_conditions")]::parking_lanes_right
 {
     color: lightskyblue;
 }
-way[highway][parking:left:fee=yes]::parking_lanes_left,
-way[highway][parking:both:fee=yes]::parking_lanes_left
+way[highway][parking:left:fee=yes][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:both:fee=yes][setting("highlight_conditions")]::parking_lanes_left
 {
     color: lightskyblue;
 }
 
-way[highway][parking:right:fee:conditional=~/yes/]::parking_lanes_right,
-way[highway][parking:both:fee:conditional=~/yes/]::parking_lanes_right
+way[highway][parking:right:fee:conditional=~/yes/][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:both:fee:conditional=~/yes/][setting("highlight_conditions")]::parking_lanes_right
 {
     color: lightskyblue;
 }
-way[highway][parking:left:fee:conditional=~/yes/]::parking_lanes_left,
-way[highway][parking:both:fee:conditional=~/yes/]::parking_lanes_left
+way[highway][parking:left:fee:conditional=~/yes/][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:both:fee:conditional=~/yes/][setting("highlight_conditions")]::parking_lanes_left
 {
     color: lightskyblue;
 }
 
-way[highway][parking:right:access=customers]::parking_lanes_right,
-way[highway][parking:both:access=customers]::parking_lanes_right
+/* Residential zone or paid parking. */
+
+way[highway][parking:right:fee=yes][parking:right:zone][parking:right:zone!=no][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:right:fee=yes][parking:both:zone][parking:both:zone!=no][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:both:fee=yes][parking:right:zone][parking:right:zone!=no][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:both:fee=yes][parking:both:zone][parking:both:zone!=no][setting("highlight_conditions")]::parking_lanes_right
+{
+    color: hotpink;
+}
+way[highway][parking:left:fee=yes][parking:left:zone][parking:left:zone!=no][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:left:fee=yes][parking:both:zone][parking:both:zone!=no][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:both:fee=yes][parking:left:zone][parking:left:zone!=no][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:both:fee=yes][parking:both:zone][parking:both:zone!=no][setting("highlight_conditions")]::parking_lanes_left
+{
+    color: hotpink;
+}
+
+/* Customers parking. */
+
+way[highway][parking:right:access=customers][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:both:access=customers][setting("highlight_conditions")]::parking_lanes_right
 {
     color: darkorange;
 }
-way[highway][parking:left:access=customers]::parking_lanes_left,
-way[highway][parking:both:access=customers]::parking_lanes_left
+way[highway][parking:left:access=customers][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:both:access=customers][setting("highlight_conditions")]::parking_lanes_left
 {
     color: darkorange;
 }
 
-way[highway][parking:right:access:conditional=~/customers/]::parking_lanes_right,
-way[highway][parking:both:access:conditional=~/customers/]::parking_lanes_right
+way[highway][parking:right:access:conditional=~/customers/][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:both:access:conditional=~/customers/][setting("highlight_conditions")]::parking_lanes_right
 {
     color: darkorange;
 }
-way[highway][parking:left:access:conditional=~/customers/]::parking_lanes_left,
-way[highway][parking:both:access:conditional=~/customers/]::parking_lanes_left
+way[highway][parking:left:access:conditional=~/customers/][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:both:access:conditional=~/customers/][setting("highlight_conditions")]::parking_lanes_left
 {
     color: darkorange;
 }
 
-way[highway][parking:right:access=private]::parking_lanes_right,
-way[highway][parking:both:access=private]::parking_lanes_right
-{
-    color: orangered;
-}
-way[highway][parking:left:access=private]::parking_lanes_left,
-way[highway][parking:both:access=private]::parking_lanes_left
-{
-    color: orangered;
-}
+/* Private parking (e.g. residents only). */
 
-way[highway][parking:right:access:conditional=~/private/]::parking_lanes_right,
-way[highway][parking:both:access:conditional=~/private/]::parking_lanes_right
+way[highway][parking:right:access=private][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:both:access=private][setting("highlight_conditions")]::parking_lanes_right
 {
     color: orangered;
 }
-way[highway][parking:left:access:conditional=~/private/]::parking_lanes_left,
-way[highway][parking:both:access:conditional=~/private/]::parking_lanes_left
+way[highway][parking:left:access=private][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:both:access=private][setting("highlight_conditions")]::parking_lanes_left
 {
     color: orangered;
 }
 
-way[highway][parking:right:disabled=designated]::parking_lanes_right,
-way[highway][parking:both:disabled=designated]::parking_lanes_right
+way[highway][parking:right:access:conditional=~/private/][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:both:access:conditional=~/private/][setting("highlight_conditions")]::parking_lanes_right
+{
+    color: orangered;
+}
+way[highway][parking:left:access:conditional=~/private/][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:both:access:conditional=~/private/][setting("highlight_conditions")]::parking_lanes_left
+{
+    color: orangered;
+}
+
+/* Disabled parking. */
+
+way[highway][parking:right:disabled=designated][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:both:disabled=designated][setting("highlight_conditions")]::parking_lanes_right
 {
     color: turquoise;
 }
-way[highway][parking:left:disabled=designated]::parking_lanes_left,
-way[highway][parking:both:disabled=designated]::parking_lanes_left
+way[highway][parking:left:disabled=designated][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:both:disabled=designated][setting("highlight_conditions")]::parking_lanes_left
 {
     color: turquoise;
 }
 
-way[highway][parking:right:disabled:conditional=~/designated/]::parking_lanes_right,
-way[highway][parking:both:disabled:conditional=~/designated/]::parking_lanes_right
+way[highway][parking:right:disabled:conditional=~/designated/][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:both:disabled:conditional=~/designated/][setting("highlight_conditions")]::parking_lanes_right
 {
     color: turquoise;
 }
-way[highway][parking:left:disabled:conditional=~/designated/]::parking_lanes_left,
-way[highway][parking:both:disabled:conditional=~/designated/]::parking_lanes_left
+way[highway][parking:left:disabled:conditional=~/designated/][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:both:disabled:conditional=~/designated/][setting("highlight_conditions")]::parking_lanes_left
 {
     color: turquoise;
 }
 
-way[highway][parking:right:restriction=no_parking]::parking_lanes_right,
-way[highway][parking:both:restriction=no_parking]::parking_lanes_right
+/* Charging electric vehicles. */
+
+way[highway][parking:right:restriction=charging_only][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:both:restriction=charging_only][setting("highlight_conditions")]::parking_lanes_right
+{
+    color: limegreen;
+}
+way[highway][parking:left:restriction=charging_only][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:both:restriction=charging_only][setting("highlight_conditions")]::parking_lanes_left
+{
+    color: limegreen;
+}
+
+way[highway][parking:right:restriction:conditional=~/charging_only/][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:both:restriction:conditional=~/charging_only/][setting("highlight_conditions")]::parking_lanes_right
+{
+    color: limegreen;
+}
+way[highway][parking:left:restriction:conditional=~/charging_only/][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:both:restriction:conditional=~/charging_only/][setting("highlight_conditions")]::parking_lanes_left
+{
+    color: limegreen;
+}
+
+/* Loading zone. */
+
+way[highway][parking:right:restriction=loading_only][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:both:restriction=loading_only][setting("highlight_conditions")]::parking_lanes_right
+{
+    color: lightcyan;
+}
+way[highway][parking:left:restriction=loading_only][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:both:restriction=loading_only][setting("highlight_conditions")]::parking_lanes_left
+{
+    color: lightcyan;
+}
+
+way[highway][parking:right:restriction:conditional=~/loading_only/][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:both:restriction:conditional=~/loading_only/][setting("highlight_conditions")]::parking_lanes_right
+{
+    color: lightcyan;
+}
+way[highway][parking:left:restriction:conditional=~/loading_only/][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:both:restriction:conditional=~/loading_only/][setting("highlight_conditions")]::parking_lanes_left
+{
+    color: lightcyan;
+}
+
+/* Non-existent parking lanes with physical reason */
+
+way[highway][parking:right=no][parking:right:reason][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:right=no][parking:both:reason][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:both=no][parking:right:reason][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:both=no][parking:both:reason][setting("highlight_conditions")]::parking_lanes_right
+{
+    color: plum;
+}
+way[highway][parking:left=no][parking:left:reason][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:left=no][parking:both:reason][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:both=no][parking:left:reason][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:both=no][parking:both:reason][setting("highlight_conditions")]::parking_lanes_left
+{
+    color: plum;
+}
+
+/* No parking restrictions */
+
+way[highway][parking:right:restriction=no_parking][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:both:restriction=no_parking][setting("highlight_conditions")]::parking_lanes_right
 {
     color: orange;
 }
-way[highway][parking:left:restriction=no_parking]::parking_lanes_left,
-way[highway][parking:both:restriction=no_parking]::parking_lanes_left
+way[highway][parking:left:restriction=no_parking][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:both:restriction=no_parking][setting("highlight_conditions")]::parking_lanes_left
 {
     color: orange;
 }
 
-way[highway][parking:right:restriction=no_standing]::parking_lanes_right,
-way[highway][parking:both:restriction=no_standing]::parking_lanes_right
+way[highway][parking:right:restriction:conditional=~/no_parking/][setting("highlight_conditions")]::parking_lanes_right_conditional,
+way[highway][parking:both:restriction:conditional=~/no_parking/][setting("highlight_conditions")]::parking_lanes_right_conditional
+{
+    color: orange;
+}
+way[highway][parking:left:restriction:conditional=~/no_parking/][setting("highlight_conditions")]::parking_lanes_left_conditional,
+way[highway][parking:both:restriction:conditional=~/no_parking/][setting("highlight_conditions")]::parking_lanes_left_conditional
+{
+    color: orange;
+}
+
+way[highway][parking:right:restriction=no_standing][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:both:restriction=no_standing][setting("highlight_conditions")]::parking_lanes_right
 {
     color: salmon;
 }
-way[highway][parking:left:restriction=no_standing]::parking_lanes_left,
-way[highway][parking:both:restriction=no_standing]::parking_lanes_left
+way[highway][parking:left:restriction=no_standing][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:both:restriction=no_standing][setting("highlight_conditions")]::parking_lanes_left
 {
     color: salmon;
 }
 
-way[highway][parking:right:restriction=no_stopping]::parking_lanes_right,
-way[highway][parking:both:restriction=no_stopping]::parking_lanes_right
+way[highway][parking:right:restriction:conditional=~/no_standing/][setting("highlight_conditions")]::parking_lanes_right_conditional,
+way[highway][parking:both:restriction:conditional=~/no_standing/][setting("highlight_conditions")]::parking_lanes_right_conditional
+{
+    color: salmon;
+}
+way[highway][parking:left:restriction:conditional=~/no_standing/][setting("highlight_conditions")]::parking_lanes_left_conditional,
+way[highway][parking:both:restriction:conditional=~/no_standing/][setting("highlight_conditions")]::parking_lanes_left_conditional
+{
+    color: salmon;
+}
+
+way[highway][parking:right:restriction=no_stopping][setting("highlight_conditions")]::parking_lanes_right,
+way[highway][parking:both:restriction=no_stopping][setting("highlight_conditions")]::parking_lanes_right
 {
     color: red;
 }
-way[highway][parking:left:restriction=no_stopping]::parking_lanes_left,
-way[highway][parking:both:restriction=no_stopping]::parking_lanes_left
+way[highway][parking:left:restriction=no_stopping][setting("highlight_conditions")]::parking_lanes_left,
+way[highway][parking:both:restriction=no_stopping][setting("highlight_conditions")]::parking_lanes_left
 {
     color: red;
 }
 
-
-
-/* loading, charging, temporary no parking */
-
-
+way[highway][parking:right:restriction:conditional=~/no_stopping/][setting("highlight_conditions")]::parking_lanes_right_conditional,
+way[highway][parking:both:restriction:conditional=~/no_stopping/][setting("highlight_conditions")]::parking_lanes_right_conditional
+{
+    color: red;
+}
+way[highway][parking:left:restriction:conditional=~/no_stopping/][setting("highlight_conditions")]::parking_lanes_left_conditional,
+way[highway][parking:both:restriction:conditional=~/no_stopping/][setting("highlight_conditions")]::parking_lanes_left_conditional
+{
+    color: red;
+}
 
 /*------------------------------------------------------------------*/
 /* Styling to read deprecated tags - a warning style is added later */
@@ -713,12 +991,12 @@ way[highway][parking:condition:both=customers][setting("highlight_conditions")]:
 way[highway][parking:condition:right=private][setting("highlight_conditions")]::parking_lanes_right_deprecated,
 way[highway][parking:condition:both=private][setting("highlight_conditions")]::parking_lanes_right_deprecated
 {
-    color: gold;
+    color: orangered;
 }
 way[highway][parking:condition:left=private][setting("highlight_conditions")]::parking_lanes_left_deprecated,
 way[highway][parking:condition:both=private][setting("highlight_conditions")]::parking_lanes_left_deprecated
 {
-    color: gold;
+    color: orangered;
 }
 
 way[highway][parking:condition:right=disabled][setting("highlight_conditions")]::parking_lanes_right_deprecated,
@@ -730,6 +1008,28 @@ way[highway][parking:condition:left=disabled][setting("highlight_conditions")]::
 way[highway][parking:condition:both=disabled][setting("highlight_conditions")]::parking_lanes_left_deprecated
 {
     color: turquoise;
+}
+
+way[highway][parking:condition:right=charging][setting("highlight_conditions")]::parking_lanes_right_deprecated,
+way[highway][parking:condition:both=charging][setting("highlight_conditions")]::parking_lanes_right_deprecated
+{
+    color: limegreen;
+}
+way[highway][parking:condition:left=charging][setting("highlight_conditions")]::parking_lanes_left_deprecated,
+way[highway][parking:condition:both=charging][setting("highlight_conditions")]::parking_lanes_left_deprecated
+{
+    color: limegreen;
+}
+
+way[highway][parking:condition:right=loading][setting("highlight_conditions")]::parking_lanes_right_deprecated,
+way[highway][parking:condition:both=loading][setting("highlight_conditions")]::parking_lanes_right_deprecated
+{
+    color: lightcyan;
+}
+way[highway][parking:condition:left=loading][setting("highlight_conditions")]::parking_lanes_left_deprecated,
+way[highway][parking:condition:both=loading][setting("highlight_conditions")]::parking_lanes_left_deprecated
+{
+    color: lightcyan;
 }
 
 way[highway][parking:condition:right=no_parking][setting("highlight_conditions")]::parking_lanes_right_deprecated,
@@ -778,25 +1078,25 @@ way[highway][parking:condition:both=no][setting("highlight_conditions")]::parkin
 way[highway][parking:condition:right=free][parking:condition:right:conditional=~/disc/][setting("highlight_conditions")]::parking_lanes_right_deprecated,
 way[highway][parking:condition:both=free][parking:condition:both:conditional=~/disc/][setting("highlight_conditions")]::parking_lanes_right_deprecated
 {
-    color: #1c86ee;
+    color: dodgerblue;
 }
 
 way[highway][parking:condition:left=free][parking:condition:left:conditional=~/disc/][setting("highlight_conditions")]::parking_lanes_left_deprecated,
 way[highway][parking:condition:both=free][parking:condition:both:conditional=~/disc/][setting("highlight_conditions")]::parking_lanes_left_deprecated
 {
-    color: #1c86ee;
+    color: dodgerblue;
 }
 
 way[highway][parking:condition:right=~/^(free|disc)$/][parking:condition:right:conditional=~/ticket/][setting("highlight_conditions")]::parking_lanes_right_deprecated,
 way[highway][parking:condition:both=~/^(free|disc)$/][parking:condition:both:conditional=~/ticket/][setting("highlight_conditions")]::parking_lanes_right_deprecated
 {
-    color: #009999;
+    color: lightskyblue;
 }
 
 way[highway][parking:condition:left=~/^(free|disc)$/][parking:condition:left:conditional=~/ticket/][setting("highlight_conditions")]::parking_lanes_left_deprecated,
 way[highway][parking:condition:both=~/^(free|disc)$/][parking:condition:both:conditional=~/ticket/][setting("highlight_conditions")]::parking_lanes_left_deprecated
 {
-    color: #009999;
+    color: lightskyblue;
 }
 
 /*-----------------*/
