@@ -5,9 +5,12 @@ This is an update to the [JOSM Parking Lane Style](https://josm.openstreetmap.de
 **Authors** of the original version:
 *Sebastian Klemm, Kay Drangmeister, Jeroen Hoek, riiga*
 
-**Changes:**
+## Changes
 * Support for new street parking tags
 * The parking position is symbolised by an indicated kerb line
 * Several additional styles for conditional parking restrictions
 * Deprecated tags are highlighted by their own warning style, the old attributes are still shown at the same time
 * Slight adjustments of some other styles and colours
+
+## Legend
+![Legend](https://user-images.githubusercontent.com/66696066/204113432-8771a833-186f-4cea-b2fa-b30c5d5eda72.png)
